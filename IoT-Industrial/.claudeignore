@@ -1,0 +1,20 @@
+# Archivos comprimidos — ignorar completamente
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.tar.xz
+*.gz
+*.bz2
+*.xz
+*.lz
+*.lzma
+*.cab
+*.iso
+*.dmg
+*.pkg
+*.deb
+*.rpm
