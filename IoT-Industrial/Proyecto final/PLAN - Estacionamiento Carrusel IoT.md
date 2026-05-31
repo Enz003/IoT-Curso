@@ -195,7 +195,7 @@ A estimar en el doc:
 ### Fase 1 — Diseño y documentación base (Día 1)
 - [x] Definir N de carruseles y slots por carrusel para la simulación → **3 carruseles × 8 slots** (24 posiciones totales).
 - [x] Decidir servidor: **Node.js** (Express + mqtt.js + ws).
-- [ ] Dibujar el diagrama de arquitectura (draw.io) y exportarlo. → *Lo dibuja Enzo en draw.io; ver `Guía del diagrama (draw.io).md`.*
+- [x] Dibujar el diagrama de arquitectura (draw.io) y exportarlo. → *Lo dibuja Enzo en draw.io; ver `Guía del diagrama (draw.io).md`.*
 - [x] Redactar problema, contexto, objetivos y justificación de IoT. → *Ver `Documento Técnico - Base.md`.*
 
 ### Fase 2 — Prototipo: gateway ESP32 en Wokwi (Día 1–2)

@@ -1,4 +1,4 @@
-# Guía para dibujar el diagrama de arquitectura en draw.io
+ # Guía para dibujar el diagrama de arquitectura en draw.io
 
 Objetivo: un diagrama de **4 capas (de arriba hacia abajo)** con una **línea divisoria clara entre el mundo OT (PLC) y el mundo IT/IoT**. Exportarlo como **PNG o SVG** para insertarlo en el documento técnico.
 
