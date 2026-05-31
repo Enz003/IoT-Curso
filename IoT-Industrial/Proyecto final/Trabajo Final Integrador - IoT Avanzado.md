@@ -8,7 +8,7 @@ El proyecto puede estar orientado a sectores como:
 
 - manufactura inteligente;
 - agricultura de precisión;
-- logística y cadena de suministro;
+- logística y cadena de suministro
 - salud conectada;
 - energía y edificios inteligentes;
 - ciudades inteligentes;
