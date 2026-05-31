@@ -7,7 +7,7 @@
 **Sector:** Ciudades inteligentes / movilidad urbana (Semana 5)
 
 ---
-
+lucas
 ## 0. Idea central (resumen del concepto)
 
 Un estacionamiento tipo carrusel es una estructura rotatoria vertical que almacena varios vehículos en poco espacio. La propuesta IoT sensoriza cada *slot* (posición) del carrusel para saber en tiempo real si está libre u ocupado, monitorea el motor del carrusel (mantenimiento predictivo) y expone esa información en dos productos:
