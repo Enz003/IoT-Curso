@@ -11,10 +11,31 @@ Simulación del nodo de borde (carrusel-01) que lee las señales del carrusel, l
 
 ```
 Fase2-Wokwi/
-├── sketch.ino       ← firmware del ESP32 (versión final, HiveMQ + TLS)
+├── sketch.ino       ← carrusel-01 (nodo principal)
 ├── diagram.json     ← circuito Wokwi (ESP32 + 8 pulsadores + 3 potenciómetros)
-└── libraries.txt    ← PubSubClient
+├── libraries.txt    ← PubSubClient
+├── carrusel-02/     ← copia para el carrusel-02
+└── carrusel-03/     ← copia para el carrusel-03
 ```
+
+---
+
+## Los 3 carruseles (un ESP32 por carrusel)
+
+La arquitectura define **un nodo ESP32 por carrusel**. Cada subcarpeta es un proyecto Wokwi
+idéntico salvo dos líneas (`DEVICE_ID` y `TOPIC`):
+
+| Nodo | DEVICE_ID | Topic |
+|---|---|---|
+| carrusel-01 (raíz) | `carrusel-01` | `carrusel/carrusel-01/telemetria` |
+| carrusel-02 | `carrusel-02` | `carrusel/carrusel-02/telemetria` |
+| carrusel-03 | `carrusel-03` | `carrusel/carrusel-03/telemetria` |
+
+Se corre cada uno en su propia pestaña/proyecto de Wokwi (los tres pueden publicar a la vez).
+
+> **Importante (HiveMQ):** el *client ID* de MQTT es el `DEVICE_ID`, así que al ser distinto en cada
+> nodo no hay conflicto. Si dos nodos usaran el mismo client ID, HiveMQ los desconectaría en bucle.
+> El usuario/contraseña del cluster es el mismo para los tres.
 
 ---
 
