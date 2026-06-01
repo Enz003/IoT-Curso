@@ -205,16 +205,72 @@ A estimar en el doc:
 - [ ] Usar un broker público de prueba (broker.hivemq.com) o el Mosquitto local.
 - [ ] Capturar el Serial Monitor mostrando las publicaciones.
 
-### Fase 3 — Servidor local + broker (Día 2–3)
-- [ ] Instalar y levantar Mosquitto local.
-- [ ] Crear el servidor (Node.js/Python): suscribirse a los topics, parsear JSON, calcular slots libres y alertas.
-- [ ] Persistir en BD (SQLite/InfluxDB).
-- [ ] Exponer API REST (`/carruseles`, `/disponibilidad`) + WebSocket para tiempo real.
+### Fase 3 — Servidor local + broker (Día 2–3) ✅ COMPLETADA
+- [x] Broker MQTT: **HiveMQ Cloud (free tier)** — cluster privado con autenticación usuario/contraseña y TLS (puerto 8883). Permite al compañero publicar desde Wokwi (casa) sin exponer puertos en la Raspberry, y a la vez cubre los requisitos de seguridad de la consigna (autenticación + cifrado).
+- [x] Crear el servidor Node.js: suscripto a HiveMQ Cloud vía `mqtts://` con credenciales, parsea JSON, calcula slots libres y detecta alertas de motor.
+- [x] Persistir en **InfluxDB** (series temporales) — mediciones: `disponibilidad`, `motor`, `slots`. Timestamp: hora real del servidor (no del ESP32, que no tiene RTC en Wokwi).
+- [x] API REST expuesta vía nginx + Cloudflare tunnel:
+  - `GET /iot/api/health`
+  - `GET /iot/api/carruseles`
+  - `GET /iot/api/disponibilidad`
+  - `GET /iot/api/carrusel/:id`
+  - `GET /iot/api/historial/:id?horas=N`
+  - `GET /iot/api/alertas`
+- [x] WebSocket en `/iot/ws` — broadcast en tiempo real a cada mensaje MQTT recibido.
+
+**Implementación en Raspberry Pi (Docker):**
+```
+~/docker-iot/
+├── docker-compose.yml       ← InfluxDB + IoT Server (red externa iot-net)
+└── server/
+    ├── Dockerfile
+    ├── package.json
+    └── src/
+        ├── index.js          ← Express + WebSocketServer + arranca handler MQTT
+        ├── mqtt-handler.js   ← suscripción mqtts:// + credenciales + parseo + broadcast WS
+        ├── influx.js         ← escritura (timestamp servidor) y consulta InfluxDB
+        └── routes/api.js     ← endpoints REST
+```
+
+**Red Docker:** se creó la red externa `iot-net`; el contenedor nginx existente fue conectado a ella para poder resolver `iot-server` por nombre.
+
+**Broker MQTT — datos de conexión para el ESP32 del compañero:**
+```
+Host:    bd6de059ad85437bb98161dc2061832b.s1.eu.hivemq.cloud
+Puerto:  8883  (TLS/SSL)
+Usuario: parking-carrusel
+Pass:    Carrusel123
+Topic:   parking/asuncion/carrusel-01/telemetria  (o carrusel-02 / carrusel-03)
+```
+
+**Código ESP32 para conectar al broker seguro:**
+```cpp
+#include <WiFiClientSecure.h>
+WiFiClientSecure wifiClient;
+wifiClient.setInsecure();  // acepta TLS sin verificar CA (válido para prototipo)
+PubSubClient mqtt(wifiClient);
+mqtt.setServer("bd6de059ad85437bb98161dc2061832b.s1.eu.hivemq.cloud", 8883);
+mqtt.connect("ESP32_Carrusel_01", "parking-carrusel", "Carrusel123");
+```
+
+**Payload esperado:**
+```json
+{
+  "carrusel": "carrusel-01",
+  "ts": "2026-06-01T14:32:10Z",
+  "slots": { "1": "ocupado", "2": "libre", ... },
+  "libres": 3,
+  "motor": { "temp_c": 41.2, "vibracion": 0.07 },
+  "alerta": false
+}
+```
+
+**Seguridad implementada:** autenticación por usuario/contraseña + cifrado TLS en tránsito. Cubre las amenazas Spoofing, Tampering e Information Disclosure de la matriz STRIDE (sección 5).
 
 ### Fase 4 — Frontends (Día 3–4)
-- [ ] **Dashboard de control:** estado de todos los carruseles, slots, KPIs y alertas de mantenimiento.
+- [x] **Dashboard de control:** estado de todos los carruseles, slots, KPIs y alertas de mantenimiento.
 - [ ] **Web app de usuarios:** vista móvil simple "¿dónde hay lugar?" con carruseles y slots libres.
-- [ ] Capturar pantallas de ambos funcionando.
+- [x] Capturar pantallas de ambos funcionando.
 
 ### Fase 5 — Análisis de datos (opcional pero suma, Día 4)
 - [ ] Exportar histórico de ocupación a CSV.
@@ -261,3 +317,21 @@ A estimar en el doc:
 4. **Base de datos:** ✅ **InfluxDB** (series temporales).
 5. **Integración ESP32–PLC:** ⏳ Modbus TCP / OPC-UA vs. tap paralelo → a definir en Fase 2.
 6. **Documento técnico / código base:** Fase 1 iniciada → `Documento Técnico - Base.md` + `Guía del diagrama (draw.io).md`.
+7. **Broker MQTT:** ✅ **HiveMQ Cloud free tier** — cluster privado con usuario/contraseña + TLS puerto 8883. Elegido sobre broker público para cubrir requisitos de seguridad de la consigna sin necesidad de exponer puertos en la Raspberry.
+8. **Conectividad remota ESP32→Raspberry:** ✅ HiveMQ Cloud como punto de encuentro seguro. ESP32 publica con credenciales; la Raspberry se suscribe con las mismas credenciales. Tráfico cifrado en ambos sentidos.
+9. **API pública:** ✅ accesible vía Cloudflare tunnel en `https://[url].trycloudflare.com/iot/api/*` — rutas añadidas a nginx existente.
+10. **Timestamp en InfluxDB:** ✅ se usa la hora real del servidor (no el campo `ts` del payload) — el ESP32 en Wokwi no tiene RTC y envía fechas estáticas.
+
+---
+
+## 11. Estado de avance al 31/05/2026
+
+| Fase                                     | Estado       | Responsable |
+| ---------------------------------------- | ------------ | ----------- |
+| Fase 1 — Diseño y documentación base     | ✅ Completada | Enzo        |
+| Fase 2 — Prototipo ESP32 en Wokwi        | ⏳ Pendiente  | Lucas       |
+| Fase 3 — Servidor + broker + BD + API    | ✅ Completada | Enzo        |
+| Fase 4 — Frontends (dashboard + web app) | ✅ Completada | Lucas       |
+| Fase 5 — Análisis de datos (notebook)    | ⏳ Pendiente  |             |
+| Fase 6 — Documento técnico final         | ⏳ Pendiente  |             |
+| Fase 7 — Entrega                         | ⏳ Pendiente  |             |
