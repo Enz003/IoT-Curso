@@ -1,0 +1,3 @@
+# Librería que Wokwi instala automáticamente.
+# WiFi y WiFiClientSecure ya vienen con el core de ESP32 (no se listan).
+PubSubClient
