@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "author": "Lucas Andres Gonzalez Ortiz",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -432, "left": 379.24, "attrs": {} },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "potTemp",
+      "top": -577.3,
+      "left": 566.2,
+      "attrs": { "label": "Temp motor" }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "potVib",
+      "top": -510.1,
+      "left": 719.8,
+      "attrs": { "label": "Vibracion" }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "potCorr",
+      "top": -346.9,
+      "left": 739,
+      "attrs": { "label": "Corriente" }
+    },
+    { "type": "wokwi-dip-switch-8", "id": "sw1", "top": -329.7, "left": 174.3, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "potTemp:VCC", "esp:3V3", "red", [ "v57.6", "h-231.35" ] ],
+    [ "potTemp:SIG", "esp:34", "blue", [ "v38.4", "h-221.35" ] ],
+    [ "potVib:SIG", "esp:35", "blue", [ "v19.2", "h-374.95" ] ],
+    [ "potCorr:GND", "esp:GND.2", "black", [ "v19.2", "h-288" ] ],
+    [ "potCorr:SIG", "esp:32", "blue", [ "v38.4", "h-413.2", "v-105.6" ] ],
+    [ "esp:13", "sw1:1b", "green", [ "h-9.45", "v-144", "h-192" ] ],
+    [ "esp:4", "sw1:2b", "green", [ "h19.2", "v-115.2", "h-307.2" ] ],
+    [ "esp:14", "sw1:3b", "green", [ "h-28.65", "v-96", "h-153.6" ] ],
+    [ "esp:27", "sw1:4b", "green", [ "h-38.25", "v-76.8", "h-134.4" ] ],
+    [ "esp:26", "sw1:5b", "green", [ "h-47.85", "v-57.6", "h-115.2" ] ],
+    [ "esp:25", "sw1:6b", "green", [ "h-57.45", "v-38.4", "h-96" ] ],
+    [ "esp:33", "sw1:7b", "green", [ "h-67.05", "v-19.2", "h-76.8" ] ],
+    [ "esp:23", "sw1:8b", "green", [ "h9.6", "v48", "h-240" ] ],
+    [ "sw1:1a", "sw1:2a", "black", [ "v0" ] ],
+    [ "sw1:2a", "sw1:3a", "black", [ "v0" ] ],
+    [ "sw1:3a", "sw1:4a", "black", [ "v0" ] ],
+    [ "sw1:4a", "sw1:5a", "black", [ "v0" ] ],
+    [ "sw1:5a", "sw1:6a", "black", [ "v0" ] ],
+    [ "sw1:6a", "sw1:7a", "black", [ "v0" ] ],
+    [ "sw1:7a", "sw1:8a", "black", [ "v0" ] ],
+    [ "sw1:8a", "esp:GND.1", "black", [ "v0" ] ],
+    [ "potTemp:GND", "potVib:GND", "black", [ "v9.6", "h-48", "v-96", "h153.6", "v153.6" ] ],
+    [ "potCorr:GND", "potVib:GND", "black", [ "h-38.4", "v-163.2" ] ],
+    [ "potCorr:VCC", "potVib:VCC", "red", [ "h37.6", "v-153.6", "h-56.8" ] ],
+    [ "potVib:VCC", "potTemp:VCC", "red", [ "h37.6", "v-76.8", "h-191.2" ] ]
+  ],
+  "dependencies": {}
+}

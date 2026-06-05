@@ -1,0 +1,2 @@
+# Librería usada por el sketch (Wokwi la instala automáticamente)
+PubSubClient
